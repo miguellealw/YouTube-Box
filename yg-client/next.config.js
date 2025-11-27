@@ -1,19 +1,17 @@
 module.exports = {
   reactStrictMode: true,
   async rewrites() {
+    // Use Docker service name when running in container, localhost otherwise
+    const apiUrl = process.env.API_URL || "http://server:5000";
+
     return [
-      // {
-      //   source: '/categories/:id',
-      //   destination: 'http://localhost:5000/api/v1.0/users/current_user/categories/:id' // api server
-      // },
       {
         source: "/auth/v1.0/:path*", // client
-        destination: "http://localhost:5000/auth/v1.0/:path*", // api server
+        destination: `${apiUrl}/auth/v1.0/:path*`, // api server
       },
       {
-        // source: '/api/:path*',
         source: "/api/v1.0/:path*", // client
-        destination: "http://localhost:5000/api/v1.0/:path*", // api server
+        destination: `${apiUrl}/api/v1.0/:path*`, // api server
       },
     ];
   },

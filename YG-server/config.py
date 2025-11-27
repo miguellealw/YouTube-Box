@@ -26,6 +26,18 @@ class Config:
   # disable warning of system resources
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+  # Connection pool settings for better reliability in Docker
+  SQLALCHEMY_ENGINE_OPTIONS = {
+    'pool_pre_ping': True,  # Verify connections before using them
+    'pool_recycle': 300,    # Recycle connections after 5 minutes
+    'pool_size': 10,        # Connection pool size
+    'max_overflow': 20,     # Max overflow connections
+    'connect_args': {
+      'connect_timeout': 10,  # Connection timeout in seconds
+      'options': '-c statement_timeout=30000'  # Query timeout 30s
+    }
+  }
+
   # YouTube API
   YOUTUBE_API_CLIENT_ID=environ.get("YOUTUBE_API_CLIENT_ID")
   YOUTUBE_API_CLIENT_SECRET=environ.get("YOUTUBE_API_CLIENT_SECRET")
