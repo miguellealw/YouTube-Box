@@ -14,6 +14,10 @@ class Config:
   API_VERSION = environ.get('API_VERSION')
   STATIC_FOLDER = 'static'
 
+  # Server configuration for external URLs (OAuth callbacks, etc.)
+  SERVER_NAME = environ.get('SERVER_NAME')
+  PREFERRED_URL_SCHEME = environ.get('PREFERRED_URL_SCHEME', 'http')
+
   # Flask Login
   SECRET_KEY = environ.get('SECRET_KEY')
   SESSION_COOKIE_NAME = environ.get('SESSION_COOKIE_NAME')
