@@ -20,6 +20,11 @@
 	* `FLASK_ENV` - environment var specifying development, testing, production
 	* `SECRET_KEY` - generate using `python -c 'import os; print(os.urandom(16))'`
 	* `SESSION_COOKIE_NAME` - random string of chars
+* Redirects
+
+# Server external URL for OAuth callbacks (what browsers see)
+	* `SERVER_NAME` - localhost:5000
+	* `PREFERRED_URL_SCHEME` - http
 * Database
 	* `DATABASE_URI`=`postgresql://postgres:<PASSWORD>@localhost:5432/<DB_NAME>`
 		* Local or Production DB
@@ -42,6 +47,10 @@ Example:
 # API
 FRONTEND_SERVER=http://localhost:3000
 API_VERSION=v1.0
+
+# Server external URL for OAuth callbacks (what browsers see)
+SERVER_NAME=localhost:5000
+PREFERRED_URL_SCHEME=http
 
 # Sessions
 SECRET_KEY=...
