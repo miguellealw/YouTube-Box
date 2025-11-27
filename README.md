@@ -21,4 +21,8 @@
 ## Category Page
 <img src="./design-files/category-page.jpg"/>
 
+---
 
+1. Set up backend
+2. Set up frontend
+3. Run `docker compose up`
