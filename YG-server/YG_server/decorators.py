@@ -1,6 +1,5 @@
 from functools import wraps
-from flask import redirect, session, _request_ctx_stack, request, abort, current_app
-from flask.json import jsonify
+from flask import redirect, session, request, abort, current_app, g, jsonify
 from YG_server.auth.oauth import get_authenticated_service
 
 # For requires_auth
@@ -27,10 +26,6 @@ def yt_auth_required(f):
 
 ############### AUTH0 ###############
 # For Auth0 - from https://auth0.com/docs/quickstart/backend/python#create-the-jwt-validation-decorator
-
-AUTH0_DOMAIN = current_app.AUTH0_DOMAIN
-ALGORITHMS = current_app.ALGORITHMS
-API_AUDIENCE = current_app.API_AUDIENCE
 
 # Format error response and append status code
 def get_token_auth_header():
@@ -78,6 +73,11 @@ def requires_auth(f):
 	"""
 	@wraps(f)
 	def decorated(*args, **kwargs):
+		# Get config values from current_app context
+		AUTH0_DOMAIN = current_app.config.get('AUTH0_DOMAIN')
+		ALGORITHMS = current_app.config.get('ALGORITHMS')
+		API_AUDIENCE = current_app.config.get('API_AUDIENCE')
+
 		token = get_token_auth_header()
 		jsonurl = urlopen("https://" + AUTH0_DOMAIN + "/.well-known/jwks.json")
 		jwks = json.loads(jsonurl.read())
@@ -119,7 +119,7 @@ def requires_auth(f):
 						" token."
 					}, 401)
 
-				_request_ctx_stack.top.current_user = payload
+				g.current_user = payload
 
 				auth_id = request.args.get('auth_id')
 				return f(auth_id, *args, **kwargs)

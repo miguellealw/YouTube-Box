@@ -1,1 +1,7 @@
 pg.env
+.env.test
+
+# Ignore all .env files except examples
+.env
+.env.local
+.env.*.local

@@ -1,0 +1,34 @@
+# Dockerfile for running tests
+FROM python:3.9-slim-bookworm
+
+WORKDIR /app
+
+# Install system dependencies needed for building Python packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libpq-dev \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install test dependencies
+RUN pip install --no-cache-dir pytest python-dotenv
+
+# Copy application code
+COPY YG_server YG_server
+COPY tests tests
+COPY config.py .
+COPY pytest.ini .
+
+# Add the app directory to PYTHONPATH so imports work
+ENV PYTHONPATH=/app
+
+# Set environment for testing
+ENV FLASK_ENV=testing
+
+# Default command runs tests
+CMD ["pytest", "-v"]

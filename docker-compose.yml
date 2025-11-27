@@ -64,6 +64,24 @@ services:
     networks:
       app-network:
 
+  # Test service - runs unit tests
+  test:
+    build:
+      context: ./YG-server
+      dockerfile: Dockerfile.test
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - FLASK_ENV=testing
+      - TEST_DATABASE_URI=postgresql://postgres:postgres_password@db:5432/test_db
+      - SECRET_KEY=test-secret-key
+      - FLASK_APP=youtubebox.py
+    networks:
+      app-network:
+    profiles:
+      - test
+
 networks:
   app-network:
     driver: bridge
