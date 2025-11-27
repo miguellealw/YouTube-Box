@@ -1,8 +1,6 @@
-# FROM python:3.6-alpine
-
-# Why use slim-buster 
+# Why use slim variant
 # https://stackoverflow.com/questions/62715570/failing-to-install-psycopg2-binary-on-new-docker-container
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-bookworm
 
 # For alpine
 # RUN adduser -D youtubebox
@@ -33,19 +31,19 @@ COPY requirements.txt requirements.txt
 # 			openssl-dev
 
 
-# Dependencies for building psycopg2 from source
-# Solution: https://stackoverflow.com/a/67404591
-# Alternate: https://github.com/psycopg/psycopg2/issues/684#issuecomment-431929976
-RUN apt-get update && apt-get -y install libpq-dev gcc
-
-# RUN venv/bin/pip install -r requirements.txt
-RUN pip3 install -r requirements.txt
-# RUN venv/bin/pip install gunicorn 
-RUN pip3 install gunicorn 
-# RUN venv/bin/pip install gunicorn pymysql
-
-# Uninstall tools that built psycopg2 from source
-RUN apt-get -y --purge remove libpq-dev gcc
+# Install dependencies, build Python packages, then cleanup build tools
+# This must be done in one layer to minimize image size
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libpq-dev \
+    gcc \
+    python3-dev \
+    && pip3 install --no-cache-dir -r requirements.txt \
+    && pip3 install --no-cache-dir gunicorn \
+    && apt-get purge -y --auto-remove \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Move files and folders into container
 COPY YG_server YG_server
