@@ -1,7 +1,19 @@
+# =============================================================================
+# Environment Files
+# =============================================================================
+# Ignore all environment files that contain sensitive credentials
+# Only commit .example files as templates for new developers
+
+# Root level
 pg.env
 .env.test
 
-# Ignore all .env files except examples
-.env
-.env.local
-.env.*.local
+# Backend (YG-server)
+YG-server/.env
+
+# Frontend (yg-client)
+yg-client/.env
+yg-client/.env.local
+yg-client/.env.development
+yg-client/.env.production
+yg-client/.env.*.local
